@@ -7,8 +7,13 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
+  bloc: ^8.1.4
   flutter:
     sdk: flutter
+  flutter_modular: ^6.3.4
+  http: ^1.2.2
+  shared_preferences: ^2.3.5
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:
