@@ -23,10 +23,8 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(backgroundColor: theme.colorScheme.primaryContainer),
       body: SafeArea(
         child: BlocProvider(
           create: (_) => cubit,
@@ -41,16 +39,22 @@ class _UserPageState extends State<UserPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      UserWidget(
-                        name: user.name,
-                        user: user.login,
-                        avatarUrl: user.avatarUrl,
-                        bio: user.bio,
-                        company: user.company,
-                        location: user.location,
-                        email: user.email,
-                        site: user.blog,
-                        twitterUsername: user.twitterUsername,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: UserWidget(
+                          onTap: () {},
+                          name: user.name,
+                          user: user.login,
+                          avatarUrl: user.avatarUrl,
+                          bio: user.bio,
+                          company: user.company,
+                          location: user.location,
+                          email: user.email,
+                          blog: user.blog,
+                          twitterUsername: user.twitterUsername,
+                          followers: user.followers,
+                          following: user.following,
+                        ),
                       )
                     ],
                   ),

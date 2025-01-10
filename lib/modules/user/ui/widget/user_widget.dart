@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:petize_challenge/modules/user/ui/widget/label_widget.dart';
 
 class UserWidget extends StatelessWidget {
   final String name;
@@ -10,8 +11,9 @@ class UserWidget extends StatelessWidget {
   final String? bio;
   final String? company;
   final String? location;
-  final String? site;
+  final String? blog;
   final String? twitterUsername;
+  final VoidCallback? onTap;
 
   const UserWidget({
     super.key,
@@ -24,30 +26,107 @@ class UserWidget extends StatelessWidget {
     this.bio,
     this.company,
     this.location,
-    this.site,
+    this.blog,
     this.twitterUsername,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return DecoratedBox(
-      decoration: BoxDecoration(color: theme.colorScheme.primaryContainer),
-      child: Column(
-        spacing: 16.0,
-        children: [
-          ListTile(
-            leading: CircleAvatar(backgroundImage: NetworkImage(avatarUrl)),
-            title: Text(name),
-            subtitle: Text(user),
-          ),
-          if (bio != null) Text(bio!),
-          if (company != null) Text(company!),
-          if (location != null) Text(location!),
-          if (email != null) Text(email!),
-          if (site != null) Text(site!),
-          if (twitterUsername != null) Text(twitterUsername!),
-        ],
+      decoration: BoxDecoration(
+          color: theme.colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(16.0)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+        child: Column(
+          children: [
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(avatarUrl),
+                maxRadius: 24.0,
+              ),
+              title: Text(
+                name,
+                style: theme.textTheme.titleLarge!
+                    .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text('@$user'),
+              contentPadding: EdgeInsets.zero,
+              trailing: onTap != null
+                  ? IconButton.outlined(
+                      style: ButtonStyle(
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0))),
+                        side: WidgetStatePropertyAll(
+                            BorderSide(width: 2.0, color: theme.primaryColor)),
+                      ),
+                      onPressed: onTap,
+                      icon: Icon(
+                        Icons.close,
+                        color: theme.primaryColor,
+                      ))
+                  : null,
+            ),
+            Row(
+              spacing: 16.0,
+              children: [
+                LabelWidget(
+                  text: '$followers seguidores',
+                  icon: Icons.groups_outlined,
+                ),
+                LabelWidget(
+                  text: '$following seguindo',
+                  icon: Icons.favorite_border_outlined,
+                ),
+              ],
+            ),
+            if (bio != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                child: Text(
+                  bio!,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyLarge!
+                      .copyWith(color: Color(0xFF4A5568)),
+                ),
+              ),
+            Wrap(
+              runSpacing: 8.0,
+              spacing: 16.0,
+              alignment: WrapAlignment.center,
+              children: [
+                if (company != null)
+                  LabelWidget(
+                    icon: Icons.work_outline_rounded,
+                    text: company!,
+                  ),
+                if (location != null)
+                  LabelWidget(
+                    icon: Icons.location_on_outlined,
+                    text: location!,
+                  ),
+                if (email != null)
+                  LabelWidget(
+                    icon: Icons.email_outlined,
+                    text: email!,
+                  ),
+                if (blog != null)
+                  LabelWidget(
+                    icon: Icons.link_outlined,
+                    text: blog!,
+                  ),
+                if (twitterUsername != null)
+                  LabelWidget(
+                    icon: Icons.link_outlined,
+                    text: twitterUsername!,
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -30,6 +30,12 @@ class UserRepositoryRemote implements UserRepository {
           blog: result.value.blog,
           bio: result.value.bio,
           reposUrl: result.value.reposUrl,
+          followers: result.value.followers,
+          following: result.value.following,
+          location: result.value.location,
+          company: result.value.company,
+          email: result.value.email,
+          twitterUsername: result.value.twitterUsername,
         );
         _cachedData = user;
         return Result.ok(user);
