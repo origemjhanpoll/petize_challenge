@@ -23,10 +23,12 @@ class UserRepositoryRemote implements UserRepository {
     switch (result) {
       case Ok<UserApiModel>():
         final user = UserModel(
+          name: result.value.name,
           login: result.value.login,
           id: result.value.id,
           avatarUrl: result.value.avatarUrl,
-          url: result.value.url,
+          blog: result.value.blog,
+          bio: result.value.bio,
           reposUrl: result.value.reposUrl,
         );
         _cachedData = user;

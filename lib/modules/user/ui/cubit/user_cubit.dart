@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:petize_challenge/modules/user/data/repositories/user_repository.dart';
@@ -14,7 +16,7 @@ class UserCubit extends Cubit<UserState> {
 
   final _log = Logger('UserViewModel');
 
-  Future<void> loadUser({required String user}) async {
+  Future<void> load({required String user}) async {
     emit(state.copyWith(isLoading: true));
     try {
       final userResult = await _repository.getUser(user: user);
@@ -23,7 +25,8 @@ class UserCubit extends Cubit<UserState> {
         _log.fine('Loaded user');
       } else if (userResult is Error<UserModel>) {
         emit(state.copyWith(
-            hasError: true, errorMessage: 'Failed to load user'));
+            hasError: true,
+            errorMessage: (userResult.error as HttpException).message));
         _log.warning('Failed to load user', userResult.error);
       }
     } catch (e) {

@@ -43,7 +43,7 @@ class UserState extends Equatable {
       isLoaded: isLoaded ?? this.isLoaded,
       isLoading: isLoading ?? this.isLoading,
       hasError: hasError ?? this.hasError,
-      errorMessage: errorMessage,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
