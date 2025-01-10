@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class UserModel extends Equatable {
+class UserApiModel extends Equatable {
   final String login;
   final int id;
   final String nodeId;
@@ -35,7 +35,7 @@ class UserModel extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  const UserModel({
+  const UserApiModel({
     required this.login,
     required this.id,
     required this.nodeId,
@@ -71,38 +71,8 @@ class UserModel extends Equatable {
     this.updatedAt,
   });
 
-  factory UserModel.init() {
-    return UserModel(
-      login: "",
-      id: 0,
-      nodeId: "",
-      avatarUrl: "",
-      gravatarId: "",
-      url: "",
-      htmlUrl: "",
-      followersUrl: "",
-      followingUrl: "",
-      gistsUrl: "",
-      starredUrl: "",
-      subscriptionsUrl: "",
-      organizationsUrl: "",
-      reposUrl: "",
-      eventsUrl: "",
-      receivedEventsUrl: "",
-      type: "",
-      userViewType: "",
-      siteAdmin: false,
-      publicRepos: 0,
-      publicGists: 0,
-      followers: 0,
-      following: 0,
-      createdAt: null,
-      updatedAt: null,
-    );
-  }
-
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory UserApiModel.fromJson(Map<String, dynamic> json) {
+    return UserApiModel(
       login: json['login'],
       id: json['id'],
       nodeId: json['node_id'],
