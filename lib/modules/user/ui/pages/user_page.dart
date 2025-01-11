@@ -19,7 +19,6 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   late UserCubit _userCubit;
   late RepoCubit _repoCubit;
-  late ScrollController controller;
   @override
   void initState() {
     _userCubit = widget.userCubit;
