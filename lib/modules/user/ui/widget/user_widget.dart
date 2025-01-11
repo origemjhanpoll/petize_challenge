@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:petize_challenge/modules/user/ui/widget/label_widget.dart';
 
@@ -44,7 +45,7 @@ class UserWidget extends StatelessWidget {
           children: [
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(avatarUrl),
+                backgroundImage: CachedNetworkImageProvider(avatarUrl),
                 maxRadius: 24.0,
               ),
               title: Text(

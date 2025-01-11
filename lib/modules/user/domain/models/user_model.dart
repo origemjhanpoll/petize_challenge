@@ -9,6 +9,7 @@ class UserModel extends Equatable {
   final String? blog;
   final int followers;
   final int following;
+  final int publicRepos;
   final String? bio;
   final String? company;
   final String? location;
@@ -24,6 +25,7 @@ class UserModel extends Equatable {
     this.blog,
     this.followers = 0,
     this.following = 0,
+    this.publicRepos = 0,
     this.bio,
     this.company,
     this.location,
@@ -52,6 +54,7 @@ class UserModel extends Equatable {
       blog: json['blog'],
       followers: json['followers'],
       following: json['following'],
+      publicRepos: json['public_repos'],
       bio: json['bio'],
       company: json['company'],
       location: json['location'],
@@ -70,6 +73,7 @@ class UserModel extends Equatable {
       'blog': blog,
       'followers': followers,
       'following': following,
+      'public_repos': publicRepos,
       'bio': bio,
       'company': company,
       'location': location,
@@ -87,6 +91,7 @@ class UserModel extends Equatable {
     String? blog,
     int? followers,
     int? following,
+    int? publicRepos,
     String? bio,
     String? company,
     String? location,
@@ -102,6 +107,7 @@ class UserModel extends Equatable {
       blog: blog ?? this.blog,
       followers: followers ?? this.followers,
       following: following ?? this.following,
+      publicRepos: publicRepos ?? this.publicRepos,
       bio: bio ?? this.bio,
       company: company ?? this.company,
       location: location ?? this.location,
@@ -120,6 +126,7 @@ class UserModel extends Equatable {
         blog,
         followers,
         following,
+        publicRepos,
         bio,
         company,
         location,
