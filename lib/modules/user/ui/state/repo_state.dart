@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:petize_challenge/modules/user/domain/models/repo_model.dart';
-import 'package:petize_challenge/modules/user/domain/models/user_model.dart';
 
 class RepoState extends Equatable {
   final List<RepoModel> repos;
