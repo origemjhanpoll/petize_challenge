@@ -46,7 +46,22 @@ class UserWidget extends StatelessWidget {
             ListTile(
               leading: CircleAvatar(
                 backgroundImage: CachedNetworkImageProvider(avatarUrl),
+                backgroundColor: theme.colorScheme.inversePrimary,
                 maxRadius: 24.0,
+                child: CachedNetworkImage(
+                  imageUrl: avatarUrl,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(
+                      Icons.error_outline,
+                      size: 38.0,
+                      color: theme.primaryColor),
+                  imageBuilder: (context, imageProvider) {
+                    return CircleAvatar(
+                      backgroundImage: imageProvider,
+                      maxRadius: 24.0,
+                    );
+                  },
+                ),
               ),
               title: Text(
                 name,
