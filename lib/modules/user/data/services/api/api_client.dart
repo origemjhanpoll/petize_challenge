@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:petize_challenge/modules/user/data/services/api/model/repo_api_model.dart';
 
 import 'package:petize_challenge/modules/user/data/services/api/model/user_api_model.dart';
+import 'package:petize_challenge/utils/extract_message.dart';
 
 class ApiClientService {
   Future<UserApiModel> getUser({required String user}) async {
@@ -17,7 +18,8 @@ class ApiClientService {
         final user = UserApiModel.fromJson(data);
         return user;
       } else {
-        throw HttpException("Invalid response: ${response.statusCode}");
+        throw HttpException(
+            "Invalid response: ${response.statusCode}\n${extractMessage(response.body)}");
       }
     } catch (e) {
       rethrow;

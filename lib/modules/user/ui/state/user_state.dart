@@ -3,7 +3,6 @@ import 'package:petize_challenge/modules/user/domain/models/user_model.dart';
 
 class UserState extends Equatable {
   final UserModel user;
-  final List repos;
   final bool isLoading;
   final bool isLoaded;
   final bool hasError;
@@ -11,7 +10,6 @@ class UserState extends Equatable {
 
   const UserState({
     required this.user,
-    required this.repos,
     this.isLoaded = false,
     this.isLoading = false,
     this.hasError = false,
@@ -21,7 +19,6 @@ class UserState extends Equatable {
   factory UserState.init() {
     return UserState(
       user: UserModel.init(),
-      repos: [],
       isLoading: false,
       isLoaded: false,
       hasError: false,
@@ -31,7 +28,6 @@ class UserState extends Equatable {
 
   UserState copyWith({
     UserModel? user,
-    List? repos,
     bool? isLoading,
     bool? isLoaded,
     bool? hasError,
@@ -39,7 +35,6 @@ class UserState extends Equatable {
   }) {
     return UserState(
       user: user ?? this.user,
-      repos: repos ?? this.repos,
       isLoaded: isLoaded ?? this.isLoaded,
       isLoading: isLoading ?? this.isLoading,
       hasError: hasError ?? this.hasError,
@@ -50,7 +45,6 @@ class UserState extends Equatable {
   @override
   List<Object?> get props => [
         user,
-        repos,
         isLoaded,
         isLoading,
         hasError,
