@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:petize_challenge/modules/user/data/repositories/repository.dart';
 import 'package:petize_challenge/modules/user/ui/state/repo_state.dart';
-import 'package:petize_challenge/modules/user/ui/state/user_state.dart';
 
 class RepoCubit extends Cubit<RepoState> {
   final Repository _repository;
