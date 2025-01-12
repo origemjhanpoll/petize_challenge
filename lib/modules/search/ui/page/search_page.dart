@@ -90,9 +90,9 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 BlocBuilder<SearchCubit, SearchState>(
                   builder: (context, state) {
-                    if (state.isLoading) {
+                    if (state is SearchLoading) {
                       return Center(child: CircularProgressIndicator());
-                    } else if (state.isLoaded) {
+                    } else if (state is SearchSuccess) {
                       final search = state.search;
                       return Expanded(
                         child: Column(

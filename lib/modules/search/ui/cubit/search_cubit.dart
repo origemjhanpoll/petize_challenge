@@ -10,25 +10,28 @@ class SearchCubit extends Cubit<SearchState> {
 
   SearchCubit({required SearchRepository repository})
       : _repository = repository,
-        super(SearchState.init());
+        super(SearchInitial());
 
   final _log = Logger('SearchCubit');
 
   Future<void> load({required String user}) async {
-    emit(state.copyWith(isLoading: true));
+    emit(SearchLoading());
     try {
       final searchResult = await _repository.getUsers(user: user, page: 1);
-      emit(state.copyWith(isLoaded: true, search: searchResult));
-      _log.fine('Loaded user');
+      if (!isClosed) {
+        emit(SearchSuccess(searchResult));
+        _log.fine('Loaded search results');
+      }
     } on HttpException catch (error) {
-      emit(state.copyWith(hasError: true, errorMessage: error.message));
-      _log.warning('Failed to load users', error);
+      if (!isClosed) {
+        emit(SearchError(error.message));
+        _log.warning('Failed to load users', error);
+      }
     } catch (e) {
-      _log.severe('An error occurred while loading data', e);
-      emit(state.copyWith(
-          hasError: true, errorMessage: 'An unexpected error occurred.'));
-    } finally {
-      emit(state.copyWith(isLoading: false));
+      if (!isClosed) {
+        emit(SearchError('An unexpected error occurred.'));
+        _log.severe('An error occurred while loading data', e);
+      }
     }
   }
 }

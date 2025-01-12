@@ -10,25 +10,28 @@ class UserCubit extends Cubit<UserState> {
 
   UserCubit({required Repository repository})
       : _repository = repository,
-        super(UserState.init());
+        super(UserInitial());
 
   final _log = Logger('UserCubit');
 
   Future<void> load({required String user}) async {
-    emit(state.copyWith(isLoading: true));
+    emit(UserLoading());
     try {
       final userResult = await _repository.getUser(user: user);
-      emit(state.copyWith(isLoaded: true, user: userResult));
-      _log.fine('Loaded user');
+      if (!isClosed) {
+        emit(UserSuccess(userResult));
+        _log.fine('Loaded user');
+      }
     } on HttpException catch (error) {
-      emit(state.copyWith(hasError: true, errorMessage: error.message));
-      _log.warning('Failed to load user', error);
+      if (!isClosed) {
+        emit(UserError(error.message));
+        _log.warning('Failed to load user', error);
+      }
     } catch (e) {
-      _log.severe('An error occurred while loading data', e);
-      emit(state.copyWith(
-          hasError: true, errorMessage: 'An unexpected error occurred.'));
-    } finally {
-      emit(state.copyWith(isLoading: false));
+      if (!isClosed) {
+        emit(UserError('An unexpected error occurred.'));
+        _log.severe('An error occurred while loading data', e);
+      }
     }
   }
 }

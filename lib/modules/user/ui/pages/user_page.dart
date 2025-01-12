@@ -56,14 +56,14 @@ class _UserPageState extends State<UserPage> {
             children: [
               BlocConsumer<UserCubit, UserState>(
                 listener: (context, state) {
-                  if (state.isLoaded) {
+                  if (state is UserSuccess) {
                     _repoCubit.load(url: state.user.reposUrl);
                   }
                 },
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state is UserLoading) {
                     return Center(child: CircularProgressIndicator());
-                  } else if (state.isLoaded) {
+                  } else if (state is UserSuccess) {
                     final user = state.user;
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -82,7 +82,7 @@ class _UserPageState extends State<UserPage> {
                         following: user.following,
                       ),
                     );
-                  } else if (state.hasError) {
+                  } else if (state is UserError) {
                     return Expanded(
                       child: Center(
                         child: Column(
@@ -90,7 +90,7 @@ class _UserPageState extends State<UserPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${state.errorMessage}',
+                              state.errorMessage,
                               style: textTheme.bodyLarge!.copyWith(
                                 color: Colors.red,
                                 fontWeight: FontWeight.bold,
@@ -111,9 +111,9 @@ class _UserPageState extends State<UserPage> {
               ),
               BlocBuilder<RepoCubit, RepoState>(
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state is RepoLoading) {
                     return Center(child: CircularProgressIndicator());
-                  } else if (state.isLoaded) {
+                  } else if (state is RepoSuccess) {
                     return Flexible(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -134,7 +134,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                     );
-                  } else if (state.hasError) {
+                  } else if (state is RepoError) {
                     return Expanded(
                       child: Center(
                         child: Column(
@@ -142,7 +142,7 @@ class _UserPageState extends State<UserPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${state.errorMessage}',
+                              state.errorMessage,
                               style: textTheme.bodyLarge!.copyWith(
                                 color: Colors.red,
                                 fontWeight: FontWeight.bold,

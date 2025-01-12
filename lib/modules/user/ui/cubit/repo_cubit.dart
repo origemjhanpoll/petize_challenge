@@ -10,25 +10,28 @@ class RepoCubit extends Cubit<RepoState> {
 
   RepoCubit({required Repository repository})
       : _repository = repository,
-        super(RepoState.init());
+        super(RepoInitial());
 
   final _log = Logger('RepoCubit');
 
   Future<void> load({required String url}) async {
-    emit(state.copyWith(isLoading: true));
+    emit(RepoLoading());
     try {
       final reposResult = await _repository.getRepos(url: url);
-      emit(state.copyWith(isLoaded: true, repos: reposResult));
-      _log.fine('Loaded repos');
+      if (!isClosed) {
+        emit(RepoSuccess(reposResult));
+        _log.fine('Loaded repos');
+      }
     } on HttpException catch (error) {
-      emit(state.copyWith(hasError: true, errorMessage: error.message));
-      _log.warning('Failed to load repos', error);
+      if (!isClosed) {
+        emit(RepoError(error.message));
+        _log.warning('Failed to load repos', error);
+      }
     } catch (e) {
-      _log.severe('An error occurred while loading data', e);
-      emit(state.copyWith(
-          hasError: true, errorMessage: 'An unexpected error occurred.'));
-    } finally {
-      emit(state.copyWith(isLoading: false));
+      if (!isClosed) {
+        emit(RepoError('An unexpected error occurred.'));
+        _log.severe('An error occurred while loading data', e);
+      }
     }
   }
 }
