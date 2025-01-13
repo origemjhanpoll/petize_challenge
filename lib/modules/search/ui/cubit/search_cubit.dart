@@ -51,6 +51,8 @@ class SearchCubit extends Cubit<SearchState> {
 
       if (recentUsersResult != null && recentUsersResult.isNotEmpty) {
         emit(SearchRecentUses(recentUsersResult));
+      } else {
+        emit(SearchInitial());
       }
       _log.fine('Loaded recents users results');
     } catch (e) {
