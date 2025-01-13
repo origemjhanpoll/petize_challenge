@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:petize_challenge/modules/user/ui/widget/label_widget.dart';
 
 class UserWidget extends StatelessWidget {
-  final String name;
+  final String? name;
   final String user;
   final String avatarUrl;
   final int followers;
@@ -42,6 +42,7 @@ class UserWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               leading: CircleAvatar(
@@ -64,7 +65,7 @@ class UserWidget extends StatelessWidget {
                 ),
               ),
               title: Text(
-                name,
+                name ?? '--',
                 style: theme.textTheme.titleLarge!
                     .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
@@ -129,7 +130,7 @@ class UserWidget extends StatelessWidget {
                     icon: Icons.email_outlined,
                     text: email!,
                   ),
-                if (blog != null)
+                if (blog != null && blog!.isNotEmpty)
                   LabelWidget(
                     icon: Icons.link_outlined,
                     text: blog!,

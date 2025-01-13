@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 class LabelWidget extends StatelessWidget {
   final String text;
   final TextStyle? textStyle;
-  final int? maxLines;
+  final int maxLines;
   final IconData icon;
   final Color color;
+
   const LabelWidget({
     super.key,
     required this.text,
     required this.icon,
     this.textStyle,
-    this.maxLines,
+    this.maxLines = 1,
     this.color = const Color(0xFF4A5568),
   });
 
@@ -27,6 +28,7 @@ class LabelWidget extends StatelessWidget {
         Flexible(
           child: Text(
             text,
+            overflow: TextOverflow.ellipsis,
             style:
                 textStyle ?? theme.textTheme.bodyMedium!.copyWith(color: color),
             maxLines: maxLines,

@@ -39,11 +39,14 @@ class UserItemWidget extends StatelessWidget {
         ),
       ),
       title: Text(
-        login,
-        style: theme.textTheme.titleLarge!
-            .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),
+        '@$login',
+        style:
+            theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
       ),
-      contentPadding: EdgeInsets.zero,
+      subtitle: Text(
+        htmlUrl.substring(8),
+        style: theme.textTheme.bodyMedium,
+      ),
       trailing: onTap != null
           ? IconButton.outlined(
               style: ButtonStyle(

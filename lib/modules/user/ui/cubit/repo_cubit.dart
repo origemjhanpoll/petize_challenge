@@ -18,20 +18,14 @@ class RepoCubit extends Cubit<RepoState> {
     emit(RepoLoading());
     try {
       final reposResult = await _repository.getRepos(url: url);
-      if (!isClosed) {
-        emit(RepoSuccess(reposResult));
-        _log.fine('Loaded repos');
-      }
+      emit(RepoSuccess(reposResult));
+      _log.fine('Loaded repos');
     } on HttpException catch (error) {
-      if (!isClosed) {
-        emit(RepoError(error.message));
-        _log.warning('Failed to load repos', error);
-      }
+      emit(RepoError(error.message));
+      _log.warning('Failed to load repos', error);
     } catch (e) {
-      if (!isClosed) {
-        emit(RepoError('An unexpected error occurred.'));
-        _log.severe('An error occurred while loading data', e);
-      }
+      emit(RepoError('An unexpected error occurred.'));
+      _log.severe('An error occurred while loading data', e);
     }
   }
 }

@@ -62,7 +62,8 @@ class _UserPageState extends State<UserPage> {
                 },
                 builder: (context, state) {
                   if (state is UserLoading) {
-                    return Center(child: CircularProgressIndicator());
+                    return Expanded(
+                        child: Center(child: CircularProgressIndicator()));
                   } else if (state is UserSuccess) {
                     final user = state.user;
                     return Padding(
@@ -112,26 +113,24 @@ class _UserPageState extends State<UserPage> {
               BlocBuilder<RepoCubit, RepoState>(
                 builder: (context, state) {
                   if (state is RepoLoading) {
-                    return Center(child: CircularProgressIndicator());
+                    return Expanded(
+                        child: Center(child: CircularProgressIndicator()));
                   } else if (state is RepoSuccess) {
                     return Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: ListView.separated(
-                          itemCount: state.repos.length,
-                          itemBuilder: (_, index) {
-                            final repo = state.repos[index];
-                            return RepoWidget(
-                              name: repo.name,
-                              description: repo.description ??
-                                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus.',
-                              stargazersCount: repo.stargazersCount,
-                              updatedAt: repo.updatedAt,
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                              Divider(height: 32.0),
-                        ),
+                      child: ListView.separated(
+                        itemCount: state.repos.length,
+                        itemBuilder: (_, index) {
+                          final repo = state.repos[index];
+                          return RepoWidget(
+                            onTap: () {},
+                            name: repo.name,
+                            description: repo.description,
+                            stargazersCount: repo.stargazersCount,
+                            updatedAt: repo.updatedAt,
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            Divider(height: 0.0, endIndent: 16.0, indent: 16.0),
                       ),
                     );
                   } else if (state is RepoError) {

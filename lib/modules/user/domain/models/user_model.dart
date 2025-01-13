@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
-  final String name;
+  final String? name;
   final String login;
   final int id;
   final String avatarUrl;
@@ -21,7 +21,7 @@ class UserModel extends Equatable {
     required this.id,
     required this.avatarUrl,
     required this.reposUrl,
-    required this.name,
+    this.name,
     this.blog,
     this.followers = 0,
     this.following = 0,

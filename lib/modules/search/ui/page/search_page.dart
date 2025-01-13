@@ -40,112 +40,129 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
-      onTap: () => focusNode.unfocus(),
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocProvider(
-            create: (_) => _cubit,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    spacing: 16.0,
-                    children: [
-                      Flexible(
-                        child: TextField(
-                          focusNode: focusNode,
-                          controller: controller,
-                          decoration: InputDecoration(
-                            labelText: 'Digite o id do usuário',
-                            hintText: 'ex.: joao123',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(width: 1),
-                            ),
+    return Scaffold(
+      body: SafeArea(
+        child: BlocProvider(
+          create: (_) => _cubit,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  spacing: 16.0,
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        focusNode: focusNode,
+                        controller: controller,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        onTapOutside: (_) => focusNode.unfocus(),
+                        onSubmitted: (_) => _cubit.load(user: controller.text),
+                        decoration: InputDecoration(
+                          labelText: 'Digite o usuário',
+                          hintText: 'ex.: joao123',
+                          prefixIcon: Icon(Icons.alternate_email_sharp),
+                          suffixIcon: ValueListenableBuilder(
+                            valueListenable: controller,
+                            builder: (context, value, child) {
+                              if (value.text.isNotEmpty) {
+                                return IconButton(
+                                  onPressed: () {
+                                    controller.clear();
+                                  },
+                                  icon: Icon(Icons.cancel),
+                                );
+                              } else {
+                                return LimitedBox();
+                              }
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(width: 1),
                           ),
                         ),
                       ),
-                      IconButton.filled(
-                        onPressed: () {
-                          _cubit.load(user: 'origem');
-                        },
-                        style: ButtonStyle(
-                          minimumSize:
-                              WidgetStatePropertyAll(Size.square(56.0)),
-                          shape: WidgetStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                          ),
-                        ),
-                        icon: const Icon(Icons.search),
-                      )
-                    ],
-                  ),
-                ),
-                BlocBuilder<SearchCubit, SearchState>(
-                  builder: (context, state) {
-                    if (state is SearchLoading) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is SearchSuccess) {
-                      final search = state.search;
-                      return Expanded(
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title:
-                                  Text('${state.search.totalCount} Usuários'),
-                              subtitle: Divider(height: 0.0),
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: ListView.builder(
-                                  itemCount: search.items.length,
-                                  itemBuilder: (_, index) {
-                                    final user = search.items[index];
-                                    return UserItemWidget(
-                                      onTap: () {
-                                        HapticFeedback.lightImpact();
-                                        Modular.to.pushNamed(
-                                          '/user',
-                                          arguments: user.login,
-                                        );
-                                      },
-                                      login: user.login,
-                                      avatarUrl: user.avatarUrl,
-                                      htmlUrl: user.htmlUrl,
-                                    );
-                                  },
-                                ),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: controller,
+                      builder: (context, value, child) {
+                        return IconButton.filled(
+                          onPressed: value.text.isNotEmpty
+                              ? () => _cubit.load(user: controller.text)
+                              : null,
+                          style: ButtonStyle(
+                            minimumSize:
+                                WidgetStatePropertyAll(Size.square(56.0)),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return RichText(
-                      text: TextSpan(
-                        text: 'Created by ',
-                        style: theme.textTheme.labelSmall,
-                        children: const [
-                          TextSpan(
-                              text: '@origemjhanpoll',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          icon: const Icon(Icons.search),
+                        );
+                      },
+                    )
+                  ],
+                ),
+              ),
+              BlocBuilder<SearchCubit, SearchState>(
+                builder: (context, state) {
+                  if (state is SearchLoading) {
+                    return Expanded(
+                        child: Center(child: CircularProgressIndicator()));
+                  } else if (state is SearchSuccess) {
+                    final search = state.search;
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text('${state.search.totalCount} Usuários'),
+                            subtitle: Divider(height: 0.0),
+                          ),
+                          Flexible(
+                            child: ListView.builder(
+                              itemCount: search.items.length,
+                              itemBuilder: (_, index) {
+                                final user = search.items[index];
+                                return UserItemWidget(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    Modular.to.pushNamed(
+                                      '/user',
+                                      arguments: user.login,
+                                    );
+                                  },
+                                  login: user.login,
+                                  avatarUrl: user.avatarUrl,
+                                  htmlUrl: user.htmlUrl,
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     );
-                  },
-                ),
-              ],
-            ),
+                  }
+
+                  return RichText(
+                    text: TextSpan(
+                      text: 'Created by ',
+                      style: theme.textTheme.labelSmall,
+                      children: const [
+                        TextSpan(
+                            text: '@origemjhanpoll',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

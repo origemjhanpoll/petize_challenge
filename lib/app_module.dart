@@ -17,25 +17,16 @@ import 'package:petize_challenge/utils/network_service.dart';
 class AppModule extends Module {
   @override
   void binds(Injector i) {
-    i.add<NetworkService>(NetworkService.new);
+    i.addLazySingleton<NetworkService>(NetworkService.new);
     i.add<SearchLocalClientService>(SearchLocalClientService.new);
     i.add<SearchApiClientService>(SearchApiClientService.new);
     i.add<SearchRepository>(SearchRepositoryRemote.new);
-    i.addSingleton<SearchCubit>(SearchCubit.new,
-        config: BindConfig(
-          notifier: (bloc) => bloc.stream,
-        ));
+    i.add<SearchCubit>(SearchCubit.new);
     i.add<LocalClientService>(LocalClientService.new);
     i.add<ApiClientService>(ApiClientService.new);
     i.add<Repository>(RepositoryRemote.new);
-    i.addSingleton<UserCubit>(UserCubit.new,
-        config: BindConfig(
-          notifier: (bloc) => bloc.stream,
-        ));
-    i.addSingleton<RepoCubit>(RepoCubit.new,
-        config: BindConfig(
-          notifier: (bloc) => bloc.stream,
-        ));
+    i.add<UserCubit>(UserCubit.new);
+    i.add<RepoCubit>(RepoCubit.new);
     super.binds(i);
   }
 

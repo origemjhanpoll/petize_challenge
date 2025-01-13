@@ -18,20 +18,14 @@ class SearchCubit extends Cubit<SearchState> {
     emit(SearchLoading());
     try {
       final searchResult = await _repository.getUsers(user: user, page: 1);
-      if (!isClosed) {
-        emit(SearchSuccess(searchResult));
-        _log.fine('Loaded search results');
-      }
+      emit(SearchSuccess(searchResult));
+      _log.fine('Loaded search results');
     } on HttpException catch (error) {
-      if (!isClosed) {
-        emit(SearchError(error.message));
-        _log.warning('Failed to load users', error);
-      }
+      emit(SearchError(error.message));
+      _log.warning('Failed to load users', error);
     } catch (e) {
-      if (!isClosed) {
-        emit(SearchError('An unexpected error occurred.'));
-        _log.severe('An error occurred while loading data', e);
-      }
+      emit(SearchError('An unexpected error occurred.'));
+      _log.severe('An error occurred while loading data', e);
     }
   }
 }

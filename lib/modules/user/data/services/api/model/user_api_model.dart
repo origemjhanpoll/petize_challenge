@@ -20,7 +20,7 @@ class UserApiModel extends Equatable {
   final String type;
   final String userViewType;
   final bool siteAdmin;
-  final String name;
+  final String? name;
   final String? company;
   final String? blog;
   final String? location;
@@ -55,7 +55,7 @@ class UserApiModel extends Equatable {
     required this.type,
     required this.userViewType,
     required this.siteAdmin,
-    required this.name,
+    this.name,
     this.company,
     this.blog,
     this.location,

@@ -18,20 +18,14 @@ class UserCubit extends Cubit<UserState> {
     emit(UserLoading());
     try {
       final userResult = await _repository.getUser(user: user);
-      if (!isClosed) {
-        emit(UserSuccess(userResult));
-        _log.fine('Loaded user');
-      }
+      emit(UserSuccess(userResult));
+      _log.fine('Loaded user');
     } on HttpException catch (error) {
-      if (!isClosed) {
-        emit(UserError(error.message));
-        _log.warning('Failed to load user', error);
-      }
+      emit(UserError(error.message));
+      _log.warning('Failed to load user', error);
     } catch (e) {
-      if (!isClosed) {
-        emit(UserError('An unexpected error occurred.'));
-        _log.severe('An error occurred while loading data', e);
-      }
+      emit(UserError('An unexpected error occurred.'));
+      _log.severe('An error occurred while loading data', e);
     }
   }
 }
