@@ -30,6 +30,7 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     _userCubit = widget.userCubit;
     _repoCubit = widget.repoCubit;
+
     _userCubit.load(user: widget.user);
     super.initState();
   }
@@ -69,7 +70,16 @@ class _UserPageState extends State<UserPage> {
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: UserWidget(
-                        onTap: () => Modular.to.pop(),
+                        onTap: () {
+                          Modular.to.pushNamed(
+                            '/view',
+                            arguments: {
+                              'title': user.name,
+                              'url': user.htmlUrl,
+                            },
+                          );
+                        },
+                        onClose: () => Modular.to.pop(),
                         name: user.name,
                         user: user.login,
                         avatarUrl: user.avatarUrl,
@@ -122,7 +132,15 @@ class _UserPageState extends State<UserPage> {
                         itemBuilder: (_, index) {
                           final repo = state.repos[index];
                           return RepoWidget(
-                            onTap: () {},
+                            onTap: () {
+                              Modular.to.pushNamed(
+                                '/view',
+                                arguments: {
+                                  'title': repo.name,
+                                  'url': repo.htmlUrl
+                                },
+                              );
+                            },
                             name: repo.name,
                             description: repo.description,
                             stargazersCount: repo.stargazersCount,

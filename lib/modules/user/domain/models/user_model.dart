@@ -6,6 +6,7 @@ class UserModel extends Equatable {
   final int id;
   final String avatarUrl;
   final String reposUrl;
+  final String htmlUrl;
   final String? blog;
   final int followers;
   final int following;
@@ -21,6 +22,7 @@ class UserModel extends Equatable {
     required this.id,
     required this.avatarUrl,
     required this.reposUrl,
+    required this.htmlUrl,
     this.name,
     this.blog,
     this.followers = 0,
@@ -41,6 +43,7 @@ class UserModel extends Equatable {
       avatarUrl: '',
       blog: '',
       reposUrl: '',
+      htmlUrl: '',
     );
   }
 
@@ -51,6 +54,7 @@ class UserModel extends Equatable {
       id: json['id'],
       avatarUrl: json['avatar_url'],
       reposUrl: json['repos_url'],
+      htmlUrl: json['html_url'],
       blog: json['blog'],
       followers: json['followers'],
       following: json['following'],
@@ -70,6 +74,7 @@ class UserModel extends Equatable {
       'id': id,
       'avatar_url': avatarUrl,
       'repos_url': reposUrl,
+      'html_url': htmlUrl,
       'blog': blog,
       'followers': followers,
       'following': following,
@@ -88,6 +93,7 @@ class UserModel extends Equatable {
     int? id,
     String? avatarUrl,
     String? reposUrl,
+    String? htmlUrl,
     String? blog,
     int? followers,
     int? following,
@@ -104,6 +110,7 @@ class UserModel extends Equatable {
       id: id ?? this.id,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       reposUrl: reposUrl ?? this.reposUrl,
+      htmlUrl: htmlUrl ?? this.htmlUrl,
       blog: blog ?? this.blog,
       followers: followers ?? this.followers,
       following: following ?? this.following,
@@ -123,6 +130,7 @@ class UserModel extends Equatable {
         id,
         avatarUrl,
         reposUrl,
+        htmlUrl,
         blog,
         followers,
         following,

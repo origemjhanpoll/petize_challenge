@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:petize_challenge/modules/search/ui/cubit/search_cubit.dart';
@@ -70,8 +69,9 @@ class _SearchPageState extends State<SearchPage> {
                             builder: (context, value, child) {
                               if (value.text.isNotEmpty) {
                                 return IconButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     controller.clear();
+                                    await _cubit.clean();
                                   },
                                   icon: Icon(Icons.cancel),
                                 );
@@ -131,7 +131,6 @@ class _SearchPageState extends State<SearchPage> {
                                 final user = search.items[index];
                                 return UserItemWidget(
                                   onTap: () {
-                                    HapticFeedback.lightImpact();
                                     Modular.to.pushNamed(
                                       '/user',
                                       arguments: user.login,

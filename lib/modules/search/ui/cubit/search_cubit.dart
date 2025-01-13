@@ -28,4 +28,9 @@ class SearchCubit extends Cubit<SearchState> {
       _log.severe('An error occurred while loading data', e);
     }
   }
+
+  Future<void> clean() async {
+    emit(SearchInitial());
+    _log.fine('Initial search result');
+  }
 }

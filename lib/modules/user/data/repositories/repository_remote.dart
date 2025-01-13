@@ -40,6 +40,7 @@ class RepositoryRemote implements Repository {
         blog: resultRemote.blog,
         bio: resultRemote.bio,
         reposUrl: resultRemote.reposUrl,
+        htmlUrl: resultRemote.htmlUrl,
         followers: resultRemote.followers,
         following: resultRemote.following,
         location: resultRemote.location,
@@ -75,6 +76,7 @@ class RepositoryRemote implements Repository {
           name: repoApi.name,
           updatedAt: repoApi.updatedAt,
           description: repoApi.description,
+          htmlUrl: repoApi.htmlUrl,
           stargazersCount: repoApi.stargazersCount,
         );
       }).toList();

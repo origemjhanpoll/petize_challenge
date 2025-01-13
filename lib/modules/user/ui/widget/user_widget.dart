@@ -15,6 +15,7 @@ class UserWidget extends StatelessWidget {
   final String? blog;
   final String? twitterUsername;
   final VoidCallback? onTap;
+  final VoidCallback? onClose;
 
   const UserWidget({
     super.key,
@@ -30,6 +31,7 @@ class UserWidget extends StatelessWidget {
     this.blog,
     this.twitterUsername,
     this.onTap,
+    this.onClose,
   });
 
   @override
@@ -45,6 +47,7 @@ class UserWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
+              onTap: onTap,
               leading: CircleAvatar(
                 backgroundImage: CachedNetworkImageProvider(avatarUrl),
                 backgroundColor: theme.colorScheme.inversePrimary,
@@ -79,7 +82,7 @@ class UserWidget extends StatelessWidget {
                         side: WidgetStatePropertyAll(
                             BorderSide(width: 2.0, color: theme.primaryColor)),
                       ),
-                      onPressed: onTap,
+                      onPressed: onClose,
                       icon: Icon(
                         Icons.close,
                         color: theme.primaryColor,
