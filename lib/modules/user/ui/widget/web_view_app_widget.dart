@@ -12,19 +12,43 @@ class WebViewAppWidget extends StatefulWidget {
 
 class _WebViewAppWidgetState extends State<WebViewAppWidget> {
   late WebViewController _webViewController;
+  bool _isLoading = true; // Controle para exibir o loading
 
   @override
   void initState() {
-    _webViewController = WebViewController();
-    _webViewController.loadRequest(Uri.parse(widget.url));
     super.initState();
+    _webViewController = WebViewController()
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (url) {
+            setState(() {
+              _isLoading = true; // Exibe o loading ao iniciar o carregamento
+            });
+          },
+          onPageFinished: (url) {
+            setState(() {
+              _isLoading =
+                  false; // Oculta o loading ao finalizar o carregamento
+            });
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title ?? '')),
-      body: WebViewWidget(controller: _webViewController),
+      body: Stack(
+        children: [
+          WebViewWidget(controller: _webViewController),
+          if (_isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
     );
   }
 }
