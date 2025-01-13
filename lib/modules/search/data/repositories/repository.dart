@@ -64,4 +64,13 @@ class SearchRepository implements ISearchRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<void> clearRecentUsers() async {
+    try {
+      return await _localClientService.clearRecentUsers();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

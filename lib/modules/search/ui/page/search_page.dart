@@ -43,14 +43,14 @@ class _SearchPageState extends State<SearchPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: BlocProvider(
-          create: (_) => _cubit,
+        child: BlocProvider.value(
+          value: _cubit,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
                 child: Row(
                   spacing: 16.0,
                   children: [
@@ -71,9 +71,9 @@ class _SearchPageState extends State<SearchPage> {
                             builder: (context, value, child) {
                               if (value.text.isNotEmpty) {
                                 return IconButton(
-                                  onPressed: () async {
+                                  onPressed: () {
                                     controller.clear();
-                                    await _cubit.clean();
+                                    _cubit.loadRecentUsers();
                                   },
                                   icon: Icon(Icons.cancel),
                                 );
@@ -124,22 +124,80 @@ class _SearchPageState extends State<SearchPage> {
                   if (state is SearchLoading) {
                     return Expanded(
                         child: Center(child: CircularProgressIndicator()));
+                  } else if (state is SearchSuccess) {
+                    final search = state.search;
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text(
+                              '${state.search.totalCount} Usuários',
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          Flexible(
+                            child: ListView.separated(
+                              itemCount: search.items.length,
+                              itemBuilder: (_, index) {
+                                final user = search.items[index];
+                                return UserItemWidget(
+                                  onTap: () {
+                                    Modular.to
+                                        .pushNamed(
+                                      '/user',
+                                      arguments: user.login,
+                                    )
+                                        .whenComplete(() {
+                                      _cubit.saveRecentUser(user: user);
+                                      controller.clear();
+                                    });
+                                  },
+                                  login: user.login,
+                                  avatarUrl: user.avatarUrl,
+                                  htmlUrl: user.htmlUrl,
+                                );
+                              },
+                              separatorBuilder: (context, index) => Divider(
+                                endIndent: 16.0,
+                                indent: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   } else if (state is SearchRecentUses) {
                     final recentUsers = state.recentUsers;
                     return Flexible(
                       child: Column(
                         children: [
                           ListTile(
-                            title: Text('Usuários recentes'),
-                            subtitle: Divider(height: 0.0),
+                            title: Text(
+                              'Usuários recentes',
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 16),
+                            trailing: IconButton(
+                              onPressed: () {
+                                _cubit.clearRecentUsers();
+                              },
+                              icon: Icon(
+                                Icons.delete_rounded,
+                                color: theme.primaryColor,
+                              ),
+                            ),
                           ),
                           Flexible(
-                            child: ListView.builder(
+                            child: ListView.separated(
                               itemCount: recentUsers.length,
                               itemBuilder: (_, index) {
                                 final recentUser = recentUsers[index];
                                 return UserItemWidget(
                                   onTap: () {
+                                    _cubit.saveRecentUser(user: recentUser);
                                     Modular.to.pushNamed(
                                       '/user',
                                       arguments: recentUser.login,
@@ -148,40 +206,15 @@ class _SearchPageState extends State<SearchPage> {
                                   login: recentUser.login,
                                   avatarUrl: recentUser.avatarUrl,
                                   htmlUrl: recentUser.htmlUrl,
+                                  icon: Icons.schedule,
+                                  iconColor: theme.hintColor,
+                                  visualDensity: VisualDensity.compact,
                                 );
                               },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else if (state is SearchSuccess) {
-                    final search = state.search;
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text('${state.search.totalCount} Usuários'),
-                            subtitle: Divider(height: 0.0),
-                          ),
-                          Flexible(
-                            child: ListView.builder(
-                              itemCount: search.items.length,
-                              itemBuilder: (_, index) {
-                                final user = search.items[index];
-                                return UserItemWidget(
-                                  onTap: () {
-                                    _cubit.saveRecentUser(user: user);
-                                    Modular.to.pushNamed(
-                                      '/user',
-                                      arguments: user.login,
-                                    );
-                                  },
-                                  login: user.login,
-                                  avatarUrl: user.avatarUrl,
-                                  htmlUrl: user.htmlUrl,
-                                );
-                              },
+                              separatorBuilder: (context, index) => Divider(
+                                endIndent: 16.0,
+                                indent: 16.0,
+                              ),
                             ),
                           ),
                         ],
@@ -193,9 +226,8 @@ class _SearchPageState extends State<SearchPage> {
                         supplementaryText: controller.text,
                         text: "Nenhum usuário encontrado para",
                         buttonText: 'Voltar',
-                        onPressed: () async {
+                        onPressed: () {
                           controller.clear();
-                          await _cubit.clean();
                         },
                       ),
                     );

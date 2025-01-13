@@ -49,18 +49,22 @@ class SearchCubit extends Cubit<SearchState> {
     try {
       final recentUsersResult = await _repository.loadRecentUsers();
 
-      if (recentUsersResult != null) {
+      if (recentUsersResult != null && recentUsersResult.isNotEmpty) {
         emit(SearchRecentUses(recentUsersResult));
       }
       _log.fine('Loaded recents users results');
     } catch (e) {
-      emit(SearchRecentUses([]));
       _log.severe('An error occurred while loading data', e);
     }
   }
 
-  Future<void> clean() async {
-    emit(SearchInitial());
-    _log.fine('Initial search result');
+  Future<void> clearRecentUsers() async {
+    try {
+      await _repository.clearRecentUsers();
+      emit(SearchInitial());
+      _log.fine('Clean recent user result');
+    } catch (e) {
+      _log.severe('An error occurred while clean data', e);
+    }
   }
 }

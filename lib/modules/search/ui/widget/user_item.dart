@@ -5,6 +5,9 @@ class UserItemWidget extends StatelessWidget {
   final String login;
   final String avatarUrl;
   final String htmlUrl;
+  final IconData? icon;
+  final Color? iconColor;
+  final VisualDensity? visualDensity;
   final VoidCallback? onTap;
 
   const UserItemWidget({
@@ -12,6 +15,9 @@ class UserItemWidget extends StatelessWidget {
     required this.login,
     required this.avatarUrl,
     required this.htmlUrl,
+    this.icon,
+    this.iconColor,
+    this.visualDensity,
     this.onTap,
   });
 
@@ -20,6 +26,7 @@ class UserItemWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListTile(
+      visualDensity: visualDensity,
       onTap: onTap,
       leading: CircleAvatar(
         backgroundImage: CachedNetworkImageProvider(avatarUrl),
@@ -48,19 +55,14 @@ class UserItemWidget extends StatelessWidget {
         style: theme.textTheme.bodyMedium,
       ),
       trailing: onTap != null
-          ? IconButton.outlined(
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0))),
-                side: WidgetStatePropertyAll(
-                    BorderSide(width: 2.0, color: theme.primaryColor)),
-              ),
+          ? IconButton(
               onPressed: onTap,
               icon: Icon(
-                Icons.navigate_next_rounded,
-                color: theme.primaryColor,
+                icon ?? Icons.navigate_next_rounded,
+                color: iconColor ?? theme.primaryColor,
               ))
           : null,
+      contentPadding: EdgeInsets.symmetric(horizontal: 16),
     );
   }
 }

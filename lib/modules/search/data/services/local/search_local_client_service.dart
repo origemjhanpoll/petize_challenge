@@ -19,14 +19,13 @@ class SearchLocalClientService {
       recentUsers.removeWhere((u) => u.id == user.id);
       recentUsers.insert(0, user);
 
-      if (recentUsers.length > 10) {
+      if (recentUsers.length > 5) {
         recentUsers.removeLast();
       }
 
-      await sharedPreferences.setString(
-        'recent_users',
-        jsonEncode(recentUsers.map((u) => u.toJson()).toList()),
-      );
+      final updatedJson =
+          jsonEncode(recentUsers.map((u) => u.toJson()).toList());
+      await sharedPreferences.setString('recent_users', updatedJson);
 
       _log.finer('Saved recent user: ${user.login}');
     } catch (e) {
@@ -48,6 +47,17 @@ class SearchLocalClientService {
     } catch (e) {
       _log.warning('Failed to load recent users', e);
       throw Exception('Failed to load recent users: $e');
+    }
+  }
+
+  Future<void> clearRecentUsers() async {
+    try {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences.remove('recent_users');
+      _log.finer('Cleared all recent users');
+    } catch (e) {
+      _log.warning('Failed to clear recent users', e);
+      throw Exception('Failed to clear recent users: $e');
     }
   }
 }
