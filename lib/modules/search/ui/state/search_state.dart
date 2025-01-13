@@ -12,12 +12,22 @@ class SearchInitial extends SearchState {}
 
 class SearchLoading extends SearchState {}
 
+class SearchEmpty extends SearchState {}
+
 class SearchSuccess extends SearchState {
   final SearchUsersModel search;
   const SearchSuccess(this.search);
 
   @override
   List<Object?> get props => [search];
+}
+
+class SearchRecentUses extends SearchState {
+  final List<UserItem> recentUsers;
+  const SearchRecentUses(this.recentUsers);
+
+  @override
+  List<Object?> get props => [recentUsers];
 }
 
 class SearchError extends SearchState {

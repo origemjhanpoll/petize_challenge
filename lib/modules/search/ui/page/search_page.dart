@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:petize_challenge/core/widgets/empty_widget.dart';
 import 'package:petize_challenge/modules/search/ui/cubit/search_cubit.dart';
 import 'package:petize_challenge/modules/search/ui/state/search_state.dart';
 import 'package:petize_challenge/modules/search/ui/widget/user_item.dart';
@@ -24,6 +25,7 @@ class _SearchPageState extends State<SearchPage> {
     controller = TextEditingController();
     focusNode = FocusNode();
 
+    _cubit.loadRecentUsers();
     super.initState();
   }
 
@@ -110,11 +112,49 @@ class _SearchPageState extends State<SearchPage> {
                   ],
                 ),
               ),
-              BlocBuilder<SearchCubit, SearchState>(
+              BlocConsumer<SearchCubit, SearchState>(
+                listener: (context, state) {
+                  if (state is SearchError) {
+                    final snackBar = SnackBar(
+                        content: Text(state.errorMessage), showCloseIcon: true);
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
                 builder: (context, state) {
                   if (state is SearchLoading) {
                     return Expanded(
                         child: Center(child: CircularProgressIndicator()));
+                  } else if (state is SearchRecentUses) {
+                    final recentUsers = state.recentUsers;
+                    return Flexible(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text('Usuários recentes'),
+                            subtitle: Divider(height: 0.0),
+                          ),
+                          Flexible(
+                            child: ListView.builder(
+                              itemCount: recentUsers.length,
+                              itemBuilder: (_, index) {
+                                final recentUser = recentUsers[index];
+                                return UserItemWidget(
+                                  onTap: () {
+                                    Modular.to.pushNamed(
+                                      '/user',
+                                      arguments: recentUser.login,
+                                    );
+                                  },
+                                  login: recentUser.login,
+                                  avatarUrl: recentUser.avatarUrl,
+                                  htmlUrl: recentUser.htmlUrl,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   } else if (state is SearchSuccess) {
                     final search = state.search;
                     return Expanded(
@@ -131,6 +171,7 @@ class _SearchPageState extends State<SearchPage> {
                                 final user = search.items[index];
                                 return UserItemWidget(
                                   onTap: () {
+                                    _cubit.saveRecentUser(user: user);
                                     Modular.to.pushNamed(
                                       '/user',
                                       arguments: user.login,
@@ -144,6 +185,18 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           ),
                         ],
+                      ),
+                    );
+                  } else if (state is SearchEmpty) {
+                    return Expanded(
+                      child: EmptyWidget(
+                        supplementaryText: controller.text,
+                        text: "Nenhum usuário encontrado para",
+                        buttonText: 'Voltar',
+                        onPressed: () async {
+                          controller.clear();
+                          await _cubit.clean();
+                        },
                       ),
                     );
                   }

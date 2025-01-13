@@ -47,6 +47,15 @@ class UserItem extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'login': login,
+      'id': id,
+      'avatar_url': avatarUrl,
+      'html_url': htmlUrl,
+    };
+  }
+
   @override
   List<Object?> get props => [login, id, avatarUrl, htmlUrl];
 }

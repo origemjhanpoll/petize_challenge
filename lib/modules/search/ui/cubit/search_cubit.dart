@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:petize_challenge/modules/search/data/repositories/repository.dart';
+import 'package:petize_challenge/modules/search/data/repositories/i_repository.dart';
+import 'package:petize_challenge/modules/search/domain/models/search_users_model.dart';
 import 'package:petize_challenge/modules/search/ui/state/search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
-  final SearchRepository _repository;
+  final ISearchRepository _repository;
 
-  SearchCubit({required SearchRepository repository})
+  SearchCubit({required ISearchRepository repository})
       : _repository = repository,
         super(SearchInitial());
 
@@ -18,13 +19,42 @@ class SearchCubit extends Cubit<SearchState> {
     emit(SearchLoading());
     try {
       final searchResult = await _repository.getUsers(user: user, page: 1);
-      emit(SearchSuccess(searchResult));
+
+      if (searchResult.items.isEmpty) {
+        emit(SearchEmpty());
+      } else {
+        emit(SearchSuccess(searchResult));
+      }
       _log.fine('Loaded search results');
     } on HttpException catch (error) {
       emit(SearchError(error.message));
       _log.warning('Failed to load users', error);
     } catch (e) {
       emit(SearchError('An unexpected error occurred.'));
+      _log.severe('An error occurred while loading data', e);
+    }
+  }
+
+  Future<void> saveRecentUser({required UserItem user}) async {
+    try {
+      await _repository.saveRecentUser(user: user);
+      await loadRecentUsers();
+      _log.fine('Save recent user result');
+    } catch (e) {
+      _log.severe('An error occurred while saved data', e);
+    }
+  }
+
+  Future<void> loadRecentUsers() async {
+    try {
+      final recentUsersResult = await _repository.loadRecentUsers();
+
+      if (recentUsersResult != null) {
+        emit(SearchRecentUses(recentUsersResult));
+      }
+      _log.fine('Loaded recents users results');
+    } catch (e) {
+      emit(SearchRecentUses([]));
       _log.severe('An error occurred while loading data', e);
     }
   }

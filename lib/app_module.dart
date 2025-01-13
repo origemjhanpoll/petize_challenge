@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:petize_challenge/modules/search/data/repositories/i_repository.dart';
 import 'package:petize_challenge/modules/search/data/repositories/repository.dart';
-import 'package:petize_challenge/modules/search/data/repositories/repository_remote.dart';
 import 'package:petize_challenge/modules/search/data/services/api/search_api_client_service.dart';
 import 'package:petize_challenge/modules/search/data/services/local/search_local_client_service.dart';
 import 'package:petize_challenge/modules/search/ui/cubit/search_cubit.dart';
@@ -21,7 +21,7 @@ class AppModule extends Module {
     i.addLazySingleton<NetworkService>(NetworkService.new);
     i.add<SearchLocalClientService>(SearchLocalClientService.new);
     i.add<SearchApiClientService>(SearchApiClientService.new);
-    i.add<SearchRepository>(SearchRepositoryRemote.new);
+    i.add<ISearchRepository>(SearchRepository.new);
     i.add<SearchCubit>(SearchCubit.new);
     i.add<LocalClientService>(LocalClientService.new);
     i.add<ApiClientService>(ApiClientService.new);
