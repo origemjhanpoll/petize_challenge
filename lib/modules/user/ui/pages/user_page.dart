@@ -52,6 +52,7 @@ class _UserPageState extends State<UserPage> {
   void dispose() {
     _repoCubit.close();
     _userCubit.close();
+    repoUrl.dispose();
     super.dispose();
   }
 

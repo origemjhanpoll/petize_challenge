@@ -18,6 +18,7 @@ class _SearchPageState extends State<SearchPage> {
   late SearchCubit _cubit;
   late TextEditingController controller;
   late FocusNode focusNode;
+  final hiddenFooter = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _SearchPageState extends State<SearchPage> {
     _cubit.close();
     controller.dispose();
     focusNode.dispose();
+    hiddenFooter.dispose();
     super.dispose();
   }
 
@@ -79,6 +81,7 @@ class _SearchPageState extends State<SearchPage> {
                                       return IconButton(
                                         onPressed: () {
                                           controller.clear();
+                                          hiddenFooter.value = false;
                                           _cubit.loadRecentUsers();
                                         },
                                         icon: Icon(Icons.cancel),
@@ -125,6 +128,8 @@ class _SearchPageState extends State<SearchPage> {
                               content: Text(state.errorMessage),
                               showCloseIcon: true);
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else if (state is SearchSuccess) {
+                          hiddenFooter.value = state.search.items.isNotEmpty;
                         }
                       },
                       builder: (context, state) {
@@ -159,6 +164,7 @@ class _SearchPageState extends State<SearchPage> {
                                           )
                                               .whenComplete(() {
                                             _cubit.saveRecentUser(user: user);
+                                            hiddenFooter.value = false;
                                             controller.clear();
                                           });
                                         },
@@ -239,9 +245,6 @@ class _SearchPageState extends State<SearchPage> {
                               supplementaryText: controller.text,
                               text: "Nenhum usuário encontrado para",
                               buttonText: 'Voltar',
-                              onPressed: () {
-                                controller.clear();
-                              },
                             ),
                           );
                         }
@@ -252,16 +255,24 @@ class _SearchPageState extends State<SearchPage> {
                   ],
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  text: 'Created by ',
-                  style: theme.textTheme.labelSmall,
-                  children: const [
-                    TextSpan(
-                        text: '@origemjhanpoll',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
+              ValueListenableBuilder(
+                valueListenable: hiddenFooter,
+                builder: (context, value, child) {
+                  if (value) {
+                    return LimitedBox();
+                  }
+                  return RichText(
+                    text: TextSpan(
+                      text: 'Created by ',
+                      style: theme.textTheme.labelSmall,
+                      children: const [
+                        TextSpan(
+                            text: '@origemjhanpoll',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  );
+                },
               ),
             ],
           ),

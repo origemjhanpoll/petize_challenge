@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class EmptyWidget extends StatelessWidget {
-  final VoidCallback? onPressed;
   final String? buttonText;
   final String text;
   final String? supplementaryText;
   const EmptyWidget({
     super.key,
-    this.onPressed,
     this.buttonText,
     required this.text,
     this.supplementaryText,
@@ -43,8 +41,6 @@ class EmptyWidget extends StatelessWidget {
                         ]
                       : null),
             ),
-            if (buttonText != null)
-              TextButton(onPressed: onPressed, child: Text(buttonText!))
           ],
         ),
       ),
