@@ -54,5 +54,10 @@
     <string>Permission needed to access network information</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Permission needed to access network information</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+    <string>sms</string>
+    <string>tel</string>
+    </array>
 </dict>
 </plist>

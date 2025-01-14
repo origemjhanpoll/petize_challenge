@@ -6,6 +6,7 @@ class LabelWidget extends StatelessWidget {
   final int maxLines;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   const LabelWidget({
     super.key,
@@ -14,27 +15,32 @@ class LabelWidget extends StatelessWidget {
     this.textStyle,
     this.maxLines = 1,
     this.color = const Color(0xFF4A5568),
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Row(
-      spacing: 8,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: color),
-        Flexible(
-          child: Text(
-            text,
-            overflow: TextOverflow.ellipsis,
-            style:
-                textStyle ?? theme.textTheme.bodyMedium!.copyWith(color: color),
-            maxLines: maxLines,
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        spacing: 8,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color),
+          Flexible(
+            child: Text(
+              text,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle ??
+                  theme.textTheme.bodyMedium!.copyWith(
+                      color: onTap != null ? theme.primaryColor : color),
+              maxLines: maxLines,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

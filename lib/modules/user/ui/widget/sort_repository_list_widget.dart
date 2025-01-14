@@ -23,6 +23,13 @@ class SortRepositoryListWidget extends StatefulWidget {
 class _SortRepositoryListWidgetState extends State<SortRepositoryListWidget> {
   DirectionEnum _currentDirection = DirectionEnum.desc;
   SortEnum _currentSort = SortEnum.updated;
+  late bool _isDissabled;
+
+  @override
+  void initState() {
+    _isDissabled = widget.onPressed == null;
+    super.initState();
+  }
 
   final Map<SortEnum, String> _sortLabels = {
     SortEnum.created: 'Criação',
@@ -63,17 +70,19 @@ class _SortRepositoryListWidgetState extends State<SortRepositoryListWidget> {
     return ListTile(
       leading: IconButton.outlined(
         style: ButtonStyle(
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
             ),
-            side: WidgetStatePropertyAll(
-                BorderSide(color: theme.primaryColor, width: 2.0))),
+          ),
+          side: WidgetStatePropertyAll(BorderSide(
+              color: _isDissabled ? theme.disabledColor : theme.primaryColor,
+              width: 1.0)),
+        ),
         onPressed: widget.onPressed != null ? _toggleDirection : null,
         icon: Icon(
           Icons.swap_vert,
-          color: theme.primaryColor,
+          color: _isDissabled ? theme.disabledColor : theme.primaryColor,
         ),
       ),
       title: Text(
@@ -81,7 +90,8 @@ class _SortRepositoryListWidgetState extends State<SortRepositoryListWidget> {
         style: theme.textTheme.titleMedium,
       ),
       horizontalTitleGap: 8.0,
-      contentPadding: EdgeInsets.only(left: 16.0, right: 12.0),
+      contentPadding: EdgeInsets.zero,
+      dense: true,
       trailing: OutlinedButton.icon(
         iconAlignment: IconAlignment.end,
         onPressed: widget.onPressed != null ? _toggleSort : null,
@@ -90,15 +100,17 @@ class _SortRepositoryListWidgetState extends State<SortRepositoryListWidget> {
         ),
         icon: Icon(Icons.swap_horiz),
         style: ButtonStyle(
-            padding:
-                WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12.0)),
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
+          padding:
+              WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12.0)),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
             ),
-            side: WidgetStatePropertyAll(
-                BorderSide(color: theme.primaryColor, width: 2.0))),
+          ),
+          side: WidgetStatePropertyAll(BorderSide(
+              color: _isDissabled ? theme.disabledColor : theme.primaryColor,
+              width: 1.0)),
+        ),
       ),
     );
   }

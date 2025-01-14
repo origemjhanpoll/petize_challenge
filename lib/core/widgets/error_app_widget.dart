@@ -26,14 +26,19 @@ class ErrorAppWidget extends StatelessWidget {
           ),
           Text(
             message,
+            textAlign: TextAlign.center,
             style: theme.textTheme.bodyLarge!.copyWith(
               color: theme.colorScheme.error,
               fontWeight: FontWeight.bold,
             ),
           ),
           if (onTap != null)
-            FilledButton.tonal(
+            FilledButton(
               onPressed: onTap,
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0))),
+              ),
               child: Text('Voltar'),
             )
         ],

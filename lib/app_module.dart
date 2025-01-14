@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:petize_challenge/modules/search/data/repositories/i_repository.dart';
 import 'package:petize_challenge/modules/search/data/repositories/repository.dart';
@@ -33,20 +34,23 @@ class AppModule extends Module {
 
   @override
   void routes(RouteManager r) {
-    r.child('/', child: (_) => SearchPage(cubit: Modular.get()));
+    r.child('/',
+        child: (_) => SearchPage(key: Key('SearchPage'), cubit: Modular.get()));
     r.child(
       '/user',
       child: (_) => UserPage(
+        key: Key('UserPage'),
         userCubit: Modular.get<UserCubit>(),
         repoCubit: Modular.get<RepoCubit>(),
         user: r.args.data,
       ),
     );
-    r.child(
-      '/view',
-      child: (_) => WebViewAppWidget(
-          title: r.args.data['title'], url: r.args.data['url']),
-    );
+    r.child('/view',
+        child: (_) => WebViewAppWidget(
+              key: Key('WebViewAppWidget'),
+              title: r.args.data['title'].toString(),
+              url: r.args.data['url'].toString(),
+            ));
 
     super.routes(r);
   }
