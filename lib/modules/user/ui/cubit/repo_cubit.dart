@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:petize_challenge/modules/user/data/repositories/repository.dart';
+import 'package:petize_challenge/modules/user/data/repositories/i_repository.dart';
 import 'package:petize_challenge/modules/user/ui/state/repo_state.dart';
 
 class RepoCubit extends Cubit<RepoState> {
-  final Repository _repository;
+  final IUserRepository _repository;
 
-  RepoCubit({required Repository repository})
+  RepoCubit({required IUserRepository repository})
       : _repository = repository,
         super(RepoInitial());
 

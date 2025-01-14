@@ -6,7 +6,7 @@ import 'package:petize_challenge/modules/user/data/services/api/model/repo_api_m
 import 'package:petize_challenge/modules/user/data/services/api/model/user_api_model.dart';
 import 'package:petize_challenge/utils/extract_message.dart';
 
-class ApiClientService {
+class UserApiService {
   Future<UserApiModel> getUser({required String user}) async {
     final uri = Uri.parse('https://api.github.com/users/$user');
 

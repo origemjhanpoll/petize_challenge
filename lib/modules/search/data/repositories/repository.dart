@@ -1,18 +1,18 @@
 import 'package:petize_challenge/modules/search/data/repositories/i_repository.dart';
-import 'package:petize_challenge/modules/search/data/services/api/search_api_client_service.dart';
-import 'package:petize_challenge/modules/search/data/services/local/search_local_client_service.dart';
+import 'package:petize_challenge/modules/search/data/services/api/search_api_service.dart';
+import 'package:petize_challenge/modules/search/data/services/local/search_local_service.dart';
 import 'package:petize_challenge/modules/search/domain/models/search_users_model.dart';
 import 'package:petize_challenge/utils/network_service.dart';
 
 class SearchRepository implements ISearchRepository {
   SearchRepository({
-    required SearchApiClientService apiClientService,
-    required SearchLocalClientService localClientService,
+    required SearchApiService apiClientService,
+    required SearchLocalService localClientService,
   })  : _apiClientService = apiClientService,
         _localClientService = localClientService;
 
-  final SearchApiClientService _apiClientService;
-  final SearchLocalClientService _localClientService;
+  final SearchApiService _apiClientService;
+  final SearchLocalService _localClientService;
   final NetworkService _networkService = NetworkService();
 
   @override

@@ -5,7 +5,7 @@ import 'package:petize_challenge/modules/user/domain/models/repo_model.dart';
 import 'package:petize_challenge/modules/user/domain/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalClientService {
+class UserLocalService {
   final _log = Logger('LocalDataService');
 
   Future<void> saveUser(UserModel? user) async {

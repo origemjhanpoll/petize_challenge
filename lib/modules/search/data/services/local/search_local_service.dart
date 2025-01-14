@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:petize_challenge/modules/search/domain/models/search_users_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SearchLocalClientService {
+class SearchLocalService {
   final _log = Logger('SearchLocalClientDataService');
 
   Future<void> saveRecentUser({required UserItem user}) async {

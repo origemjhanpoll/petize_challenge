@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:petize_challenge/core/widgets/error_app_widget.dart';
 import 'package:petize_challenge/modules/user/ui/cubit/repo_cubit.dart';
 import 'package:petize_challenge/modules/user/ui/state/repo_state.dart';
 import 'package:petize_challenge/modules/user/ui/state/user_state.dart';
@@ -44,7 +45,6 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: SafeArea(
         child: MultiBlocProvider(
@@ -95,25 +95,9 @@ class _UserPageState extends State<UserPage> {
                     );
                   } else if (state is UserError) {
                     return Expanded(
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              state.errorMessage,
-                              style: textTheme.bodyLarge!.copyWith(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () => Modular.to.pop(),
-                              label: Text('data'),
-                              icon: Icon(Icons.back_hand),
-                            )
-                          ],
-                        ),
+                      child: ErrorAppWidget(
+                        message: state.errorMessage,
+                        onTap: Modular.to.pop,
                       ),
                     );
                   }
@@ -153,26 +137,7 @@ class _UserPageState extends State<UserPage> {
                     );
                   } else if (state is RepoError) {
                     return Expanded(
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              state.errorMessage,
-                              style: textTheme.bodyLarge!.copyWith(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () => Modular.to.pop(),
-                              label: Text('data'),
-                              icon: Icon(Icons.back_hand),
-                            )
-                          ],
-                        ),
-                      ),
+                      child: ErrorAppWidget(message: state.errorMessage),
                     );
                   }
                   return LimitedBox();

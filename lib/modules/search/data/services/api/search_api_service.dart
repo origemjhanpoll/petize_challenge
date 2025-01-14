@@ -5,7 +5,7 @@ import 'package:petize_challenge/modules/search/data/services/api/model/search_u
 
 import 'package:petize_challenge/utils/extract_message.dart';
 
-class SearchApiClientService {
+class SearchApiService {
   Future<SearchUsersApiModel> getSearchUsers(
       {required String user, required int page}) async {
     final uri = Uri.parse(
