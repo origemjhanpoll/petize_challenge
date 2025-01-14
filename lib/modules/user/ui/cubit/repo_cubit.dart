@@ -14,11 +14,27 @@ class RepoCubit extends Cubit<RepoState> {
 
   final _log = Logger('RepoCubit');
 
-  Future<void> load({required String url}) async {
+  Future<void> load({
+    required String url,
+    String? sort,
+    String? direction,
+    int? perPage,
+    int? page,
+  }) async {
     emit(RepoLoading());
     try {
-      final reposResult = await _repository.getRepos(url: url);
-      emit(RepoSuccess(reposResult));
+      final reposResult = await _repository.getRepos(
+        url: url,
+        sort: sort,
+        direction: direction,
+        perPage: perPage,
+        page: page,
+      );
+      if (reposResult.isNotEmpty) {
+        emit(RepoSuccess(url: url, repos: reposResult));
+      } else {
+        emit(RepoEmpty());
+      }
       _log.fine('Loaded repos');
     } on HttpException catch (error) {
       emit(RepoError(error.message));

@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:petize_challenge/core/widgets/empty_widget.dart';
 import 'package:petize_challenge/core/widgets/error_app_widget.dart';
 import 'package:petize_challenge/modules/user/ui/cubit/repo_cubit.dart';
 import 'package:petize_challenge/modules/user/ui/state/repo_state.dart';
 import 'package:petize_challenge/modules/user/ui/state/user_state.dart';
 import 'package:petize_challenge/modules/user/ui/cubit/user_cubit.dart';
 import 'package:petize_challenge/modules/user/ui/widget/repo_widget.dart';
+import 'package:petize_challenge/modules/user/ui/widget/sort_repository_list_widget.dart';
 import 'package:petize_challenge/modules/user/ui/widget/user_widget.dart';
+
+class RepoInfo {
+  final String url;
+  final int length;
+  const RepoInfo({this.url = '', this.length = 0});
+}
 
 class UserPage extends StatefulWidget {
   final UserCubit userCubit;
@@ -27,6 +35,8 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   late UserCubit _userCubit;
   late RepoCubit _repoCubit;
+  final repoUrl = ValueNotifier<RepoInfo>(RepoInfo());
+
   @override
   void initState() {
     _userCubit = widget.userCubit;
@@ -59,6 +69,10 @@ class _UserPageState extends State<UserPage> {
                 listener: (context, state) {
                   if (state is UserSuccess) {
                     _repoCubit.load(url: state.user.reposUrl);
+                    repoUrl.value = RepoInfo(
+                      url: state.user.reposUrl,
+                      length: state.user.publicRepos,
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -104,6 +118,25 @@ class _UserPageState extends State<UserPage> {
                   return LimitedBox();
                 },
               ),
+              ValueListenableBuilder(
+                valueListenable: repoUrl,
+                builder: (context, repoInfo, child) {
+                  if (repoInfo.url.isNotEmpty) {
+                    return SortRepositoryListWidget(
+                      title: '${repoInfo.length} Repositórios',
+                      onPressed: (sort, direction) {
+                        _repoCubit.load(
+                          url: repoInfo.url,
+                          sort: sort,
+                          direction: direction,
+                        );
+                      },
+                    );
+                  }
+
+                  return LimitedBox();
+                },
+              ),
               BlocBuilder<RepoCubit, RepoState>(
                 builder: (context, state) {
                   if (state is RepoLoading) {
@@ -134,6 +167,10 @@ class _UserPageState extends State<UserPage> {
                         separatorBuilder: (context, index) =>
                             Divider(height: 0.0, endIndent: 16.0, indent: 16.0),
                       ),
+                    );
+                  } else if (state is RepoEmpty) {
+                    return Expanded(
+                      child: EmptyWidget(text: 'Nenhum repositório'),
                     );
                   } else if (state is RepoError) {
                     return Expanded(

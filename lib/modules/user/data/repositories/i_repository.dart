@@ -3,5 +3,11 @@ import 'package:petize_challenge/modules/user/domain/models/user_model.dart';
 
 abstract class IUserRepository {
   Future<UserModel> getUser({required String user});
-  Future<List<RepoModel>> getRepos({required String url});
+  Future<List<RepoModel>> getRepos({
+    required String url,
+    String? sort,
+    String? direction,
+    int? perPage,
+    int? page,
+  });
 }

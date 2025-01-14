@@ -12,12 +12,15 @@ class RepoInitial extends RepoState {}
 
 class RepoLoading extends RepoState {}
 
+class RepoEmpty extends RepoState {}
+
 class RepoSuccess extends RepoState {
+  final String url;
   final List<RepoModel> repos;
-  const RepoSuccess(this.repos);
+  const RepoSuccess({required this.url, required this.repos});
 
   @override
-  List<Object?> get props => [repos];
+  List<Object?> get props => [url, repos];
 }
 
 class RepoError extends RepoState {

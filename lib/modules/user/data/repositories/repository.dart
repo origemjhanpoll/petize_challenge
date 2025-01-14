@@ -47,6 +47,7 @@ class UserRepository implements IUserRepository {
         company: resultRemote.company,
         email: resultRemote.email,
         twitterUsername: resultRemote.twitterUsername,
+        publicRepos: resultRemote.publicRepos,
       );
 
       _localClientService.saveUser(userModel);
@@ -57,7 +58,13 @@ class UserRepository implements IUserRepository {
   }
 
   @override
-  Future<List<RepoModel>> getRepos({required String url}) async {
+  Future<List<RepoModel>> getRepos({
+    required String url,
+    String? sort,
+    String? direction,
+    int? perPage,
+    int? page,
+  }) async {
     final internetAvailable = await _networkService.hasInternet;
 
     try {
@@ -70,7 +77,13 @@ class UserRepository implements IUserRepository {
         }
       }
 
-      final resultRemote = await _apiClientService.getRepos(url: url);
+      final resultRemote = await _apiClientService.getRepos(
+        url: url,
+        sort: sort,
+        direction: direction,
+        perPage: perPage,
+        page: page,
+      );
       final reposModel = resultRemote.map((repoApi) {
         return RepoModel(
           name: repoApi.name,
