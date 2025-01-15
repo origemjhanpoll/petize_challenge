@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:petize_challenge/core/constant/screen_size.dart';
 import 'package:petize_challenge/core/widgets/empty_widget.dart';
 import 'package:petize_challenge/core/widgets/error_app_widget.dart';
+import 'package:petize_challenge/modules/user/domain/models/repo_info_model.dart';
 import 'package:petize_challenge/modules/user/ui/cubit/repo_cubit.dart';
 import 'package:petize_challenge/modules/user/ui/state/repo_state.dart';
 import 'package:petize_challenge/modules/user/ui/state/user_state.dart';
@@ -12,12 +13,6 @@ import 'package:petize_challenge/modules/user/ui/widget/repo_widget.dart';
 import 'package:petize_challenge/modules/user/ui/widget/sort_repository_list_widget.dart';
 import 'package:petize_challenge/modules/user/ui/widget/user_widget.dart';
 import 'package:petize_challenge/utils/launch_config.dart';
-
-class RepoInfo {
-  final String url;
-  final int length;
-  const RepoInfo({this.url = '', this.length = 0});
-}
 
 class UserPage extends StatefulWidget {
   final UserCubit userCubit;
@@ -37,7 +32,7 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   late UserCubit _userCubit;
   late RepoCubit _repoCubit;
-  final repoUrl = ValueNotifier<RepoInfo>(RepoInfo());
+  final _repoUrl = ValueNotifier<RepoInfoModel>(RepoInfoModel());
 
   @override
   void initState() {
@@ -52,7 +47,7 @@ class _UserPageState extends State<UserPage> {
   void dispose() {
     _repoCubit.close();
     _userCubit.close();
-    repoUrl.dispose();
+    _repoUrl.dispose();
     super.dispose();
   }
 
@@ -76,9 +71,9 @@ class _UserPageState extends State<UserPage> {
                 listener: (context, state) {
                   if (state is UserSuccess) {
                     _repoCubit.load(url: state.user.reposUrl);
-                    repoUrl.value = RepoInfo(
+                    _repoUrl.value = RepoInfoModel(
                       url: state.user.reposUrl,
-                      length: state.user.publicRepos,
+                      maximumLength: state.user.publicRepos,
                     );
                   }
                 },
@@ -140,18 +135,16 @@ class _UserPageState extends State<UserPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ValueListenableBuilder(
-                      valueListenable: repoUrl,
+                      valueListenable: _repoUrl,
                       builder: (context, repoInfo, child) {
                         if (repoInfo.url.isNotEmpty) {
                           return Padding(
                             padding: const EdgeInsets.only(
-                              left: 12.0,
-                              top: 22.0,
-                              right: 16.0,
-                            ),
+                                left: 12.0, top: 22.0, right: 16.0),
                             child: SortRepositoryListWidget(
-                              title: '${repoInfo.length} Repositórios',
-                              onPressed: repoInfo.length != 0
+                              title:
+                                  '${repoInfo.length}/${repoInfo.maximumLength} Repositórios',
+                              onPressed: repoInfo.maximumLength != 0
                                   ? (sort, direction) {
                                       _repoCubit.load(
                                         url: repoInfo.url,
@@ -167,7 +160,13 @@ class _UserPageState extends State<UserPage> {
                         return LimitedBox();
                       },
                     ),
-                    BlocBuilder<RepoCubit, RepoState>(
+                    BlocConsumer<RepoCubit, RepoState>(
+                      listener: (context, state) {
+                        if (state is RepoSuccess) {
+                          _repoUrl.value = _repoUrl.value
+                              .copyWith(length: state.repos.length);
+                        }
+                      },
                       builder: (context, state) {
                         if (state is RepoLoading) {
                           return Expanded(

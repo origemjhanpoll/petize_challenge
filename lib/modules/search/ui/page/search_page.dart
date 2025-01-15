@@ -1,10 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:petize_challenge/core/widgets/empty_widget.dart';
+import 'package:petize_challenge/core/widgets/paginated_scrollview_widget.dart';
 import 'package:petize_challenge/modules/search/ui/cubit/search_cubit.dart';
 import 'package:petize_challenge/modules/search/ui/state/search_state.dart';
 import 'package:petize_challenge/modules/search/ui/widget/user_item.dart';
+import 'package:petize_challenge/utils/launch_config.dart';
 
 class SearchPage extends StatefulWidget {
   final SearchCubit cubit;
@@ -16,15 +19,17 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late SearchCubit _cubit;
-  late TextEditingController controller;
-  late FocusNode focusNode;
-  final hiddenFooter = ValueNotifier<bool>(false);
+  late TextEditingController _controller;
+  late FocusNode _focusNode;
+  final _hiddenFooter = ValueNotifier<bool>(false);
+  bool _isLoading = false;
+  int _currentPage = 1;
 
   @override
   void initState() {
     _cubit = widget.cubit;
-    controller = TextEditingController();
-    focusNode = FocusNode();
+    _controller = TextEditingController();
+    _focusNode = FocusNode();
 
     _cubit.loadRecentUsers();
     super.initState();
@@ -33,9 +38,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void dispose() {
     _cubit.close();
-    controller.dispose();
-    focusNode.dispose();
-    hiddenFooter.dispose();
+    _controller.dispose();
+    _focusNode.dispose();
+    _hiddenFooter.dispose();
     super.dispose();
   }
 
@@ -64,24 +69,24 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           Flexible(
                             child: TextField(
-                              focusNode: focusNode,
-                              controller: controller,
+                              focusNode: _focusNode,
+                              controller: _controller,
                               enableSuggestions: false,
                               autocorrect: false,
-                              onTapOutside: (_) => focusNode.unfocus(),
-                              onSubmitted: (_) =>
-                                  _cubit.load(user: controller.text),
+                              onTapOutside: (_) => _focusNode.unfocus(),
+                              onSubmitted: (_) => _cubit.load(
+                                  user: _controller.text, isNewSearch: true),
                               decoration: InputDecoration(
                                 labelText: 'Buscar usuários',
                                 hintText: 'ex.: joao123',
                                 suffixIcon: ValueListenableBuilder(
-                                  valueListenable: controller,
+                                  valueListenable: _controller,
                                   builder: (context, value, child) {
                                     if (value.text.isNotEmpty) {
                                       return IconButton(
                                         onPressed: () {
-                                          controller.clear();
-                                          hiddenFooter.value = false;
+                                          _controller.clear();
+                                          _hiddenFooter.value = false;
                                           _cubit.loadRecentUsers();
                                         },
                                         icon: Icon(Icons.cancel),
@@ -99,11 +104,13 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           ),
                           ValueListenableBuilder(
-                            valueListenable: controller,
+                            valueListenable: _controller,
                             builder: (context, value, child) {
                               return IconButton.filled(
                                 onPressed: value.text.isNotEmpty
-                                    ? () => _cubit.load(user: controller.text)
+                                    ? () => _cubit.load(
+                                        user: _controller.text,
+                                        isNewSearch: true)
                                     : null,
                                 style: ButtonStyle(
                                   minimumSize:
@@ -129,9 +136,15 @@ class _SearchPageState extends State<SearchPage> {
                               showCloseIcon: true);
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         } else if (state is SearchSuccess) {
-                          hiddenFooter.value = state.search.items.isNotEmpty;
+                          _hiddenFooter.value = state.search.items.isNotEmpty;
                         }
                       },
+                      buildWhen: (previous, current) =>
+                          current is SearchLoading ||
+                          current is SearchSuccess ||
+                          current is SearchRecentUses ||
+                          current is SearchEmpty ||
+                          current is SearchRecentEmpty,
                       builder: (context, state) {
                         if (state is SearchLoading) {
                           return Expanded(
@@ -144,39 +157,49 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 ListTile(
                                   title: Text(
-                                    '${state.search.totalCount} Usuários encontrados',
+                                    'Usuários encontrados',
+                                    style: theme.textTheme.titleMedium,
+                                  ),
+                                  trailing: Text(
+                                    '${state.search.items.length}/${state.search.totalCount}',
                                     style: theme.textTheme.titleMedium,
                                   ),
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 16),
                                 ),
                                 Flexible(
-                                  child: ListView.separated(
-                                    itemCount: search.items.length,
-                                    itemBuilder: (_, index) {
-                                      final user = search.items[index];
-                                      return UserItemWidget(
-                                        onTap: () {
-                                          Modular.to
-                                              .pushNamed(
-                                            '/user',
-                                            arguments: user.login,
-                                          )
-                                              .whenComplete(() {
-                                            _cubit.saveRecentUser(user: user);
-                                            hiddenFooter.value = false;
-                                            controller.clear();
-                                          });
-                                        },
-                                        login: user.login,
-                                        avatarUrl: user.avatarUrl,
-                                        htmlUrl: user.htmlUrl,
-                                      );
+                                  child: PaginatedScrollViewWidget(
+                                    onLoadMore: () {
+                                      _cubit.load();
                                     },
-                                    separatorBuilder: (context, index) =>
-                                        Divider(
-                                      endIndent: 16.0,
-                                      indent: 16.0,
+                                    isLoadingMore: state is SearchLoadingMore,
+                                    child: ListView.separated(
+                                      itemCount: search.items.length,
+                                      itemBuilder: (_, index) {
+                                        final user = search.items[index];
+                                        return UserItemWidget(
+                                          onTap: () {
+                                            Modular.to
+                                                .pushNamed(
+                                              '/user',
+                                              arguments: user.login,
+                                            )
+                                                .whenComplete(() {
+                                              _cubit.saveRecentUser(user: user);
+                                              _hiddenFooter.value = false;
+                                              _controller.clear();
+                                            });
+                                          },
+                                          login: user.login,
+                                          avatarUrl: user.avatarUrl,
+                                          htmlUrl: user.htmlUrl,
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) =>
+                                          Divider(
+                                        endIndent: 16.0,
+                                        indent: 16.0,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -242,11 +265,13 @@ class _SearchPageState extends State<SearchPage> {
                         } else if (state is SearchEmpty) {
                           return Expanded(
                             child: EmptyWidget(
-                              supplementaryText: controller.text,
+                              supplementaryText: _controller.text,
                               text: "Nenhum usuário encontrado para",
                               buttonText: 'Voltar',
                             ),
                           );
+                        } else if (state is SearchRecentEmpty) {
+                          return LimitedBox();
                         }
 
                         return LimitedBox();
@@ -256,7 +281,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               ValueListenableBuilder(
-                valueListenable: hiddenFooter,
+                valueListenable: _hiddenFooter,
                 builder: (context, value, child) {
                   if (value) {
                     return LimitedBox();
@@ -265,8 +290,14 @@ class _SearchPageState extends State<SearchPage> {
                     text: TextSpan(
                       text: 'Created by ',
                       style: theme.textTheme.labelSmall,
-                      children: const [
+                      children: [
                         TextSpan(
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                final Uri toLaunch = Uri.parse(
+                                    'https://github.com/origemjhanpoll');
+                                launchInAppWithBrowserOptions(toLaunch);
+                              },
                             text: '@origemjhanpoll',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ],

@@ -12,7 +12,11 @@ class SearchInitial extends SearchState {}
 
 class SearchLoading extends SearchState {}
 
+class SearchLoadingMore extends SearchState {}
+
 class SearchEmpty extends SearchState {}
+
+class SearchRecentEmpty extends SearchState {}
 
 class SearchSuccess extends SearchState {
   final SearchUsersModel search;

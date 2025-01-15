@@ -11,9 +11,6 @@ class SearchUsersModel extends Equatable {
     required this.items,
   });
 
-  @override
-  List<Object?> get props => [totalCount, incompleteResults, items];
-
   factory SearchUsersModel.fromJson(Map<String, dynamic> json) {
     return SearchUsersModel(
       totalCount: json['total_count'] as int,
@@ -23,6 +20,21 @@ class SearchUsersModel extends Equatable {
           .toList(),
     );
   }
+
+  SearchUsersModel copyWith({
+    int? totalCount,
+    bool? incompleteResults,
+    List<UserItem>? items,
+  }) {
+    return SearchUsersModel(
+      totalCount: totalCount ?? this.totalCount,
+      incompleteResults: incompleteResults ?? this.incompleteResults,
+      items: items ?? this.items,
+    );
+  }
+
+  @override
+  List<Object?> get props => [totalCount, incompleteResults, items];
 }
 
 class UserItem extends Equatable {
@@ -54,6 +66,20 @@ class UserItem extends Equatable {
       'avatar_url': avatarUrl,
       'html_url': htmlUrl,
     };
+  }
+
+  UserItem copyWith({
+    String? login,
+    int? id,
+    String? avatarUrl,
+    String? htmlUrl,
+  }) {
+    return UserItem(
+      login: login ?? this.login,
+      id: id ?? this.id,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      htmlUrl: htmlUrl ?? this.htmlUrl,
+    );
   }
 
   @override
