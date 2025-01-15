@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:petize_challenge/core/constant/screen_size.dart';
 import 'package:petize_challenge/core/widgets/empty_widget.dart';
 import 'package:petize_challenge/core/widgets/error_app_widget.dart';
+import 'package:petize_challenge/core/widgets/paginated_scrollview_widget.dart';
 import 'package:petize_challenge/modules/user/domain/models/repo_info_model.dart';
 import 'package:petize_challenge/modules/user/ui/cubit/repo_cubit.dart';
 import 'package:petize_challenge/modules/user/ui/state/repo_state.dart';
@@ -70,7 +71,8 @@ class _UserPageState extends State<UserPage> {
               BlocConsumer<UserCubit, UserState>(
                 listener: (context, state) {
                   if (state is UserSuccess) {
-                    _repoCubit.load(url: state.user.reposUrl);
+                    _repoCubit.load(
+                        isNewSearch: true, url: state.user.reposUrl);
                     _repoUrl.value = RepoInfoModel(
                       url: state.user.reposUrl,
                       maximumLength: state.user.publicRepos,
@@ -147,6 +149,7 @@ class _UserPageState extends State<UserPage> {
                               onPressed: repoInfo.maximumLength != 0
                                   ? (sort, direction) {
                                       _repoCubit.load(
+                                        isNewSearch: true,
                                         url: repoInfo.url,
                                         sort: sort,
                                         direction: direction,
@@ -167,6 +170,11 @@ class _UserPageState extends State<UserPage> {
                               .copyWith(length: state.repos.length);
                         }
                       },
+                      buildWhen: (previous, current) =>
+                          current is RepoLoading ||
+                          current is RepoSuccess ||
+                          current is RepoEmpty ||
+                          current is RepoError,
                       builder: (context, state) {
                         if (state is RepoLoading) {
                           return Expanded(
@@ -174,28 +182,34 @@ class _UserPageState extends State<UserPage> {
                                   Center(child: CircularProgressIndicator()));
                         } else if (state is RepoSuccess) {
                           return Flexible(
-                            child: ListView.separated(
-                              itemCount: state.repos.length,
-                              itemBuilder: (_, index) {
-                                final repo = state.repos[index];
-                                return RepoWidget(
-                                  onTap: () {
-                                    Modular.to.pushNamed(
-                                      '/view',
-                                      arguments: {
-                                        'title': repo.name,
-                                        'url': repo.htmlUrl
-                                      },
-                                    );
-                                  },
-                                  name: repo.name,
-                                  description: repo.description,
-                                  stargazersCount: repo.stargazersCount,
-                                  updatedAt: repo.updatedAt,
-                                );
+                            child: PaginatedScrollViewWidget(
+                              onLoadMore: () {
+                                _repoCubit.load();
                               },
-                              separatorBuilder: (context, index) => Divider(
-                                  height: 0.0, endIndent: 16.0, indent: 16.0),
+                              isLoadingMore: state is RepoLoadingMore,
+                              child: ListView.separated(
+                                itemCount: state.repos.length,
+                                itemBuilder: (_, index) {
+                                  final repo = state.repos[index];
+                                  return RepoWidget(
+                                    onTap: () {
+                                      Modular.to.pushNamed(
+                                        '/view',
+                                        arguments: {
+                                          'title': repo.name,
+                                          'url': repo.htmlUrl
+                                        },
+                                      );
+                                    },
+                                    name: repo.name,
+                                    description: repo.description,
+                                    stargazersCount: repo.stargazersCount,
+                                    updatedAt: repo.updatedAt,
+                                  );
+                                },
+                                separatorBuilder: (context, index) => Divider(
+                                    height: 0.0, endIndent: 16.0, indent: 16.0),
+                              ),
                             ),
                           );
                         } else if (state is RepoEmpty) {

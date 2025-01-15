@@ -19,7 +19,6 @@ class SearchCubit extends Cubit<SearchState> {
   bool _hasMore = true;
   bool _isLoading = false;
   int _currentPage = 1;
-
   String? _currentSearchTerm;
 
   Future<void> load(
@@ -43,7 +42,6 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     if (!_hasMore || _currentSearchTerm == null) return;
-
     _isLoading = true;
 
     try {
@@ -61,7 +59,6 @@ class SearchCubit extends Cubit<SearchState> {
       } else {
         _loadedItems.addAll(searchResult.items);
         _currentPage++;
-
         emit(SearchSuccess(searchResult.copyWith(items: _loadedItems)));
       }
 

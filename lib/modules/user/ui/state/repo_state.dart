@@ -12,6 +12,8 @@ class RepoInitial extends RepoState {}
 
 class RepoLoading extends RepoState {}
 
+class RepoLoadingMore extends RepoState {}
+
 class RepoEmpty extends RepoState {}
 
 class RepoSuccess extends RepoState {

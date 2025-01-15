@@ -22,8 +22,6 @@ class _SearchPageState extends State<SearchPage> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
   final _hiddenFooter = ValueNotifier<bool>(false);
-  bool _isLoading = false;
-  int _currentPage = 1;
 
   @override
   void initState() {
