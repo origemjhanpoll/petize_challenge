@@ -42,10 +42,16 @@ class UserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isScreenMedium = MediaQuery.of(context).size.width > ScreenSize.small;
+    final isScreenLarge = MediaQuery.of(context).size.width > ScreenSize.medium;
+
     final theme = Theme.of(context);
     return ConstrainedBox(
-      constraints:
-          BoxConstraints(maxWidth: isScreenMedium ? 280.0 : ScreenSize.large),
+      constraints: BoxConstraints(
+          maxWidth: isScreenMedium
+              ? isScreenLarge
+                  ? 400.0
+                  : 280.0
+              : ScreenSize.large),
       child: Stack(
         children: [
           Padding(
@@ -65,9 +71,6 @@ class UserWidget extends StatelessWidget {
                       children: [
                         ListTile(
                           onTap: onTap,
-                          visualDensity: isScreenMedium
-                              ? VisualDensity.compact
-                              : VisualDensity.standard,
                           leading: CircleAvatar(
                             backgroundImage:
                                 CachedNetworkImageProvider(avatarUrl),
@@ -91,17 +94,12 @@ class UserWidget extends StatelessWidget {
                           ),
                           title: Text(
                             name ?? '--',
+                            softWrap: true,
                             style: theme.textTheme.titleLarge!.copyWith(
                                 fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text('@$user'),
                           contentPadding: EdgeInsets.only(right: 54.0),
-                        ),
-                        SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [],
-                          ),
                         ),
                         Wrap(
                           spacing: 16.0,

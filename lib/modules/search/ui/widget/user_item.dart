@@ -27,6 +27,7 @@ class UserItemWidget extends StatelessWidget {
 
     return ListTile(
       visualDensity: visualDensity,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       onTap: onTap,
       leading: CircleAvatar(
         backgroundImage: CachedNetworkImageProvider(avatarUrl),

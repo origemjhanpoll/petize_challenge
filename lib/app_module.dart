@@ -37,12 +37,12 @@ class AppModule extends Module {
     r.child('/',
         child: (_) => SearchPage(key: Key('SearchPage'), cubit: Modular.get()));
     r.child(
-      '/user',
+      '/user/:login',
       child: (_) => UserPage(
         key: Key('UserPage'),
         userCubit: Modular.get<UserCubit>(),
         repoCubit: Modular.get<RepoCubit>(),
-        user: r.args.data,
+        login: r.args.params['login'],
       ),
     );
     r.child('/view',

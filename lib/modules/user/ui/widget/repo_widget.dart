@@ -22,6 +22,7 @@ class RepoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return InkWell(
+      borderRadius: BorderRadius.circular(8.0),
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
