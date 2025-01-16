@@ -2,6 +2,27 @@
 
 Este repositório contém o projeto "Petize Challenge", desenvolvido com Flutter. Siga as instruções abaixo para clonar, instalar dependências e rodar o projeto na sua máquina.
 
+## Screenshots
+
+Home screen
+![mobile](doc/petize_1.png)
+User screen
+![mobile](doc/petize_2.png)
+
+### Challenge document
+
+🔗 [Teste Dev Flutter - Petize](https://docs.google.com/document/d/1eALqfo_jloWZY7VyZDl1oo9tBp--RUEsS0OcllyJ73w/edit?tab=t.0#heading=h.5lhmderbskwj)
+
+### Recursos utilizados
+
+- Flutter Modular
+- MediaQuery e Flex Widgets (Row, Column, Expanded e Flexible)
+- WebView
+- http
+- Bloc
+- local storage
+- MVVM
+
 ## Requisitos
 
 Antes de rodar o projeto, certifique-se de que você tem o Flutter instalado. Caso não tenha, siga as instruções para instalação no link abaixo:
@@ -34,24 +55,3 @@ Agora, basta rodar o projeto no seu dispositivo ou emulador:
 ```dart
 flutter run
 ```
-
-### Challenge document
-
-🔗[Teste Dev Flutter - Petize](https://docs.google.com/document/d/1eALqfo_jloWZY7VyZDl1oo9tBp--RUEsS0OcllyJ73w/edit?tab=t.0#heading=h.5lhmderbskwj)
-
-### Screenshots
-
-Home screen
-![mobile](doc/petize_1.png)
-User screen
-![mobile](doc/petize_2.png)
-
-## Recursos utilizados
-
-- Flutter Modular
-- MediaQuery e Flex Widgets (Row, Column, Expanded e Flexible)
-- WebView
-- http
-- Bloc
-- local storage
-- MVVM
